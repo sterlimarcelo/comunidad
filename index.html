@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comunidad</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <header>
+    <h1>🙏 Comunidad</h1>
+    <nav>
+      <button onclick="mostrar('oraciones')">Oraciones</button>
+      <button onclick="mostrar('fotos')">Fotos</button>
+      <button onclick="mostrar('instagram')">Instagram</button>
+      <button onclick="mostrar('enlaces')">Enlaces</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Oraciones -->
+    <section id="oraciones" class="seccion">
+      <h2>🕊️ Oraciones y pedidos</h2>
+      <ul>
+        <li><b>29/08/2025</b> – Señor, bendice a nuestra comunidad.</li>
+        <li><b>28/08/2025</b> – Rezar por la salud de Juan Pérez.</li>
+      </ul>
+    </section>
+
+    <!-- Fotos -->
+    <section id="fotos" class="seccion oculto">
+      <h2>📷 Fotos</h2>
+      <img src="imagenes/logo.png" alt="Encuentro" width="200">
+    </section>
+
+    <!-- Instagram -->
+    <section id="instagram" class="seccion oculto">
+      <h2>📖 Instagram</h2>
+      <p>Feed embebido de la cuenta:</p>
+      <iframe src="https://www.instagram.com/p/C5mYk1yo8n7/embed"
+              width="320" height="440" frameborder="0"></iframe>
+    </section>
+
+    <!-- Enlaces -->
+    <section id="enlaces" class="seccion oculto">
+      <h2>🌐 Enlaces útiles</h2>
+      <ul>
+        <li><a href="https://www.vatican.va/" target="_blank">Vaticano</a></li>
+        <li><a href="https://www.aciprensa.com/" target="_blank">ACI Prensa</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
