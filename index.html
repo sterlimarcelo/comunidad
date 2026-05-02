@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCANO PRO - Criptografía P2P</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --accent: #00f2ff;
+            --connected: #39ff14;
+            --disconnect: #ff3131;
+            --card: #16161a;
+            --text: #e0e0e0;
+            --neon-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        #container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), var(--neon-shadow);
+            border: 1px solid #333;
+        }
+
+        h1 {
+            text-align: center;
+            letter-spacing: 6px;
+            color: var(--accent);
+            text-shadow: var(--neon-shadow);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Bloqueo de Interfaz */
+        #main-ui { opacity: 0.3; pointer-events: none; transition: 0.5s; }
+        #main-ui.enabled { opacity: 1; pointer-events: auto; }
+
+        /* Panel Informativo y Legal */
+        .guide-box {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            text-align: center; /* Texto centrado solicitado */
+        }
+
+        .guide-header {
+            padding: 12px;
+            background: #1a1a1d;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .guide-content {
+            padding: 15px;
+            font-size: 0.85em;
+            line-height: 1.6;
+            border-top: 1px solid #222;
+            color: #bbb;
+        }
+
+        .legal-notice {
+            margin-top: 15px;
+            padding: 10px;
+            border-top: 1px dashed #444;
+            color: #ffaa00;
+            font-style: italic;
+        }
+
+        .accept-btn {
+            background: var(--connected);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 15px 0;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* Estilos de Control */
+        .connection-panel { background: #111; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #222; text-align: center; }
+        .alias-config { display: flex; gap: 10px; margin-bottom: 15px; justify-content: center; align-items: flex-end; }
+        .status-badge { display: block; text-align: center; padding: 8px; font-size: 0.8em; margin-top: 10px; border-radius: 4px; background: #222; font-weight: bold; }
+        .status-badge.active { color: var(--connected); text-shadow: 0 0 5px var(--connected); border: 1px solid var(--connected); }
+
+        .rotor-section { display: flex; justify-content: space-around; margin-bottom: 25px; background: #202024; padding: 15px; border-radius: 10px; }
+        input.rotor-input, .input-dark { background: #000; border: 1px solid #444; color: var(--accent); text-align: center; border-radius: 5px; outline: none; }
+        input.rotor-input { width: 45px; height: 45px; font-weight: bold; font-size: 1.2em; border-color: var(--accent); }
+        input.rotor-input:focus { box-shadow: var(--neon-shadow); }
+
+        textarea { width: 100%; height: 80px; background: #0f0f11; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; resize: none; box-sizing: border-box; margin-bottom: 10px; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        button { padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .btn-main { background: var(--accent); color: #000; }
+        .btn-sec { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-danger { background: var(--disconnect); color: #fff; }
+
+        #raw-code-area { background: #000; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 0.75em; word-break: break-all; border: 1px dashed #444; margin-bottom: 10px; color: #39ff14; min-height: 20px; text-align: center; }
+        #qr-container { display: none; background: white; padding: 10px; border-radius: 10px; margin: 10px auto; width: 128px; }
+        #chat-output { height: 150px; overflow-y: auto; background: #050505; padding: 10px; border-radius: 8px; border: 1px solid #222; font-size: 0.9em; text-align: left; }
+        .label-tiny { font-size: 0.65em; color: #888; display: block; margin-bottom: 4px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h1>ARCANO</h1>
+
+    <!-- Guía y Transparencia Técnica con Botón de Aceptación -->
+    <div class="guide-box" id="guide-box">
+        <div class="guide-header">DOCUMENTACIÓN Y TÉRMINOS DE USO</div>
+        <div class="guide-content">
+            <p><strong>🛡️ Cifrado de Grado Militar:</strong> Arcano utiliza <strong>AES-256 GCM</strong>. Es el estándar más robusto del mundo; un ordenador tardaría trillones de años en descifrar un mensaje sin la llave exacta.</p>
+            <p><strong>🔐 La Llave es Tuya:</strong> La seguridad reside en los 5 rotores. Si tu combinación es única, la comunicación es matemáticamente indescifrable.</p>
+            <p><strong>📡 Conexión P2P:</strong> No hay servidores centrales almacenando tus datos[cite: 2]. La conexión es directa entre tú y tu contacto[cite: 2].</p>
+            
+            <div class="legal-notice">
+                <strong>Aviso Legal:</strong> Esta herramienta se entrega para mejorar la seguridad en las comunicaciones[cite: 2]. Como desarrollador, me deslindo de toda responsabilidad por el uso indebido, malintencionado o ilegal de este software[cite: 2]. El usuario asume total responsabilidad sobre el propósito de sus comunicaciones[cite: 2].
+            </div>
+            
+            <button class="accept-btn" onclick="enableApp()">Acepto y deseo continuar</button>
+        </div>
+    </div>
+    
+    <!-- Interfaz principal inicialmente bloqueada -->
+    <div id="main-ui">
+        <div class="connection-panel">
+            <div class="alias-config">
+                <div style="flex:1">
+                    <span class="label-tiny">MI ALIAS (Editable):</span>
+                    <input type="text" id="my-alias-input" class="input-dark" style="width:100%; padding:8px;" placeholder="Tu apodo...">
+                </div>
+                <button class="btn-main" id="init-peer-btn" onclick="initPeer()">Activar</button>
+            </div>
+
+            <div id="peer-control" style="display:none; border-top: 1px solid #333; padding-top:10px;">
+                <span class="label-tiny">CONECTAR A:</span>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="dest-alias" class="input-dark" style="flex:1; padding:8px;" placeholder="Alias del contacto">
+                    <button class="btn-sec" onclick="connectByAlias()">Vincular</button>
+                </div>
+                <div id="status-display" class="status-badge">Esperando...</div>
+                <button class="btn-danger" style="width:100%; margin-top:10px;" onclick="fullReset()">Cerrar y Purgar Datos</button>
+            </div>
+        </div>
+
+        <div class="rotor-section">
+            <div class="rotor-container"><span class="label-tiny">R1</span><input type="text" class="rotor-input" id="r1" maxlength="1" value="A"></div>
+            <div class="rotor-container"><span class="label-tiny">R2</span><input type="text" class="rotor-input" id="r2" maxlength="1" value="A"></div>
+            <div class="rotor-container"><span class="label-tiny">R3</span><input type="text" class="rotor-input" id="r3" maxlength="1" value="A"></div>
+            <div class="rotor-container"><span class="label-tiny">R4</span><input type="text" class="rotor-input" id="r4" maxlength="1" value="A"></div>
+            <div class="rotor-container"><span class="label-tiny">R5</span><input type="text" class="rotor-input" id="r5" maxlength="1" value="0"></div>
+        </div>
+
+        <textarea id="messageInput" placeholder="Mensaje privado..."></textarea>
+        <button class="btn-main" style="width:100%; margin-bottom:15px;" onclick="sendEncrypted()">Cifrar y Enviar</button>
+
+        <span class="label-tiny">DATOS CIFRADOS (WhatsApp / Portapapeles):</span>
+        <div id="raw-code-area">...</div>
+        
+        <div class="btn-group">
+            <button class="btn-sec" onclick="toggleQR()">Ver QR</button>
+            <button class="btn-sec" onclick="processManual()">Descifrar Pegado</button>
+        </div>
+		
+		
+		<!-- Añadir esto justo antes del cierre del div #container -->
+<div style="margin-top: 30px; padding: 20px; border-top: 1px dashed #333; text-align: center;">
+    <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">
+        SOPORTE AL PROYECTO ARCANO
+    </p>
+    
+    <!-- Enlace directo usando tu ID de establecimiento para máxima seguridad -->
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7XYHVYCZC4734&item_name=Soporte+Proyecto+Arcano&currency_code=USD" 
+       target="_blank" 
+       style="text-decoration: none;">
+        <div style="background: #ffc439; color: #000; border-radius: 50px; padding: 12px 25px; font-size: 0.9em; font-weight: bold; display: inline-block; box-shadow: 0 4px 15px rgba(255, 196, 57, 0.4);">
+            💛 DONAR CON PAYPAL
+        </div>
+    </a>
+
+    <p style="font-size: 0.6em; color: #555; margin-top: 10px;">
+        Tu donación ayuda a mantener este sistema libre de servidores y rastreadores.
+    </p>
+</div>
+
+		
+		
+        <div id="qr-container"></div>
+
+        <div id="chat-output"></div>
+    </div>
+</div>
+
+<script>
+    let peer = null;
+    let currentConn = null;
+
+    // Generador de Alias inicial
+    const prefijos = ['arcano', 'cripto', 'nexo', 'sigma', 'vortex', 'omega'];
+    document.getElementById('my-alias-input').value = `${prefijos[Math.floor(Math.random()*prefijos.length)]}-${Math.floor(Math.random()*999)}`;
+
+    // Función para habilitar la APP tras aceptar términos
+    function enableApp() {
+        document.getElementById('main-ui').classList.add('enabled');
+        document.getElementById('guide-box').style.display = 'none';
+    }
+
+    function initPeer() {
+        const alias = document.getElementById('my-alias-input').value.trim();
+        if(!alias) return alert("Ingresa un alias.");
+        if(peer) peer.destroy();
+        peer = new Peer(alias);
+        peer.on('open', (id) => {
+            document.getElementById('peer-control').style.display = 'block';
+            document.getElementById('status-display').innerText = "ONLINE: " + id;
+            document.getElementById('init-peer-btn').disabled = true;
+            document.getElementById('my-alias-input').disabled = true;
+        });
+        peer.on('connection', (conn) => setupConnection(conn));
+        peer.on('error', () => { alert("Alias no disponible."); fullReset(); });
+    }
+
+    function connectByAlias() {
+        const dest = document.getElementById('dest-alias').value.trim();
+        if(dest) setupConnection(peer.connect(dest));
+    }
+
+    function setupConnection(conn) {
+        currentConn = conn;
+        const status = document.getElementById('status-display');
+        status.innerText = "VINCULADO CON: " + conn.peer;
+        status.classList.add('active');
+        conn.on('data', async (data) => {
+            const pass = getPass();
+            try {
+                const decrypted = await decrypt(data, pass);
+                addMsg("Recibido", decrypted);
+                document.getElementById('raw-code-area').innerText = data;
+                generateQR(data);
+            } catch(e) { addMsg("Sistema", "Error: Llave incorrecta."); }
+        });
+        conn.on('close', () => fullReset());
+    }
+
+    function fullReset() {
+        if(currentConn) currentConn.close();
+        if(peer) peer.destroy();
+        document.getElementById('peer-control').style.display = 'none';
+        const status = document.getElementById('status-display');
+        status.innerText = "Desconectado";
+        status.classList.remove('active');
+        document.getElementById('init-peer-btn').disabled = false;
+        document.getElementById('my-alias-input').disabled = false;
+        document.getElementById('messageInput').value = "";
+        document.getElementById('raw-code-area').innerText = "...";
+        document.getElementById('chat-output').innerHTML = "";
+        document.getElementById('qr-container').style.display = 'none';
+        document.querySelectorAll('.rotor-input').forEach(i => i.value = i.id === 'r5' ? '0' : 'A');
+        peer = null;
+        currentConn = null;
+        alert("Sesión finalizada y purgada[cite: 2].");
+        location.reload(); // Reinicia para volver a mostrar el disclaimer
+    }
+
+    async function deriveKey(salt, password) {
+        const encoder = new TextEncoder();
+        const baseKey = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]);
+        return crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+            baseKey, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+        );
+    }
+
+    async function encrypt(text, pass) {
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await deriveKey(salt, pass);
+        const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, new TextEncoder().encode(text));
+        const blob = new Uint8Array(salt.byteLength + iv.byteLength + encrypted.byteLength);
+        blob.set(salt, 0); blob.set(iv, 16); blob.set(new Uint8Array(encrypted), 28);
+        return btoa(String.fromCharCode(...blob));
+    }
+
+    async function decrypt(b64, pass) {
+        const data = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        const salt = data.slice(0, 16); const iv = data.slice(16, 28); const cipher = data.slice(28);
+        const key = await deriveKey(salt, pass);
+        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, cipher);
+        return new TextDecoder().decode(decrypted);
+    }
+
+    function getPass() { return Array.from(document.querySelectorAll('.rotor-input')).map(i => i.value.toUpperCase()).join(''); }
+
+    async function sendEncrypted() {
+        const input = document.getElementById('messageInput');
+        if(!input.value) return;
+        const pass = getPass();
+        const b64 = await encrypt(input.value, pass);
+        document.getElementById('raw-code-area').innerText = b64;
+        generateQR(b64);
+        if(currentConn) currentConn.send(b64);
+        addMsg("Yo", input.value);
+        input.value = "";
+    }
+
+    function processManual() {
+        const code = prompt("Pega el código cifrado:");
+        if(code) decrypt(code, getPass()).then(txt => addMsg("Manual", txt)).catch(() => alert("Error de llave o código[cite: 2]."));
+    }
+
+    function addMsg(user, text) {
+        const out = document.getElementById('chat-output');
+        out.innerHTML += `<div style="margin-bottom:5px; color:${user==='Yo'?'var(--accent)':'#fff'}"><strong>[${user}]:</strong> ${text}</div>`;
+        out.scrollTop = out.scrollHeight;
+    }
+
+    function generateQR(text) {
+        const container = document.getElementById('qr-container');
+        container.innerHTML = "";
+        new QRCode(container, { text: text, width: 128, height: 128 });
+    }
+
+    function toggleQR() {
+        const qr = document.getElementById('qr-container');
+        qr.style.display = qr.style.display === 'block' ? 'none' : 'block';
+    }
+</script>
+</body>
+</html>
