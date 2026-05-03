@@ -15,7 +15,6 @@
             --card: #16161a;
             --text: #e0e0e0;
             --neon-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-            --mp-color: #009ee3;
         }
 
         body {
@@ -171,7 +170,7 @@
         <textarea id="messageInput" placeholder="Mensaje privado..."></textarea>
         <button class="btn-main" style="width:100%; margin-bottom:15px;" onclick="sendEncrypted()">Cifrar y Enviar</button>
 
-        
+        <!-- BOTÓN DE DESCARGA OFICIAL -->
         <div style="margin: 20px 0; text-align: center;">
             <a href="https://github.com/arcanopro/arcano_pro/releases/latest" 
                style="display: block; text-decoration: none; background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 8px; font-weight: bold; text-transform: uppercase; box-shadow: var(--neon-shadow); transition: 0.3s;">
@@ -191,42 +190,25 @@
         <div id="qr-container"></div>
         <div id="chat-output" style="margin-top:10px;"></div>
         
-    
-<div style="margin-top: 30px; padding: 20px; border-top: 1px dashed #333; text-align: center;">
-    <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">SOPORTE AL PROYECTO ARCANO</p>
-    
-    <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
-        <!-- PAYPAL -->
-        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7XYHVYCZC4734&item_name=Soporte+Proyecto+Arcano&currency_code=USD" target="_blank" style="text-decoration: none; width: 80%;">
-            <div style="background: #ffc439; color: #000; border-radius: 50px; padding: 12px; font-size: 0.85em; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 196, 57, 0.4);">
-                💛 DONAR CON PAYPAL (USD)
+        <!-- SECCIÓN DE SOPORTE Y DONACIONES ÚNICA -->
+        <div style="margin-top: 30px; padding: 20px; border-top: 1px dashed #333; text-align: center;">
+            <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">SOPORTE AL PROYECTO ARCANO</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                <!-- PAYPAL -->
+                <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7XYHVYCZC4734&item_name=Soporte+Proyecto+Arcano&currency_code=USD" target="_blank" style="text-decoration: none; width: 80%;">
+                    <div style="background: #ffc439; color: #000; border-radius: 50px; padding: 12px; font-size: 0.85em; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 196, 57, 0.4);">
+                        💛 DONAR CON PAYPAL (USD)
+                    </div>
+                </a>
+
+                <!-- MERCADO PAGO - MODO ALIAS -->
+                <div style="width: 80%; background: #009ee3; color: #fff; border-radius: 50px; padding: 12px; box-shadow: 0 4px 15px rgba(0, 158, 227, 0.4); border: none;">
+                    <p style="font-size: 0.6em; margin: 0 0 2px 0; text-transform: uppercase; opacity: 0.9;">Alias Mercado Pago:</p>
+                    <span style="font-size: 1.1em; font-weight: bold; letter-spacing: 1px;">arcano.pro</span>
+                </div>
+                <p style="font-size: 0.55em; color: #555; margin: 0;">Copiá el alias y usalo en tu app de Mercado Pago</p>
             </div>
-        </a>
-
-       <!-- SECCIÓN DE SOPORTE Y DONACIONES -->
-<div style="margin-top: 30px; padding: 20px; border-top: 1px dashed #333; text-align: center;">
-    <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">SOPORTE AL PROYECTO ARCANO</p>
-    
-    <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
-        <!-- PAYPAL -->
-        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7XYHVYCZC4734&item_name=Soporte+Proyecto+Arcano&currency_code=USD" target="_blank" style="text-decoration: none; width: 80%;">
-            <div style="background: #ffc439; color: #000; border-radius: 50px; padding: 12px; font-size: 0.85em; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 196, 57, 0.4);">
-                💛 DONAR CON PAYPAL (USD)
-            </div>
-        </a>
-
-        <!-- MERCADO PAGO - MODO ALIAS (SIN LINK) -->
-        <div style="width: 80%; background: #009ee3; color: #fff; border-radius: 50px; padding: 12px; box-shadow: 0 4px 15px rgba(0, 158, 227, 0.4); border: none;">
-            <p style="font-size: 0.6em; margin: 0 0 2px 0; text-transform: uppercase; opacity: 0.9;">Alias Mercado Pago:</p>
-            <span style="font-size: 1.1em; font-weight: bold; letter-spacing: 1px;">arcano.pro</span>
-        </div>
-        <p style="font-size: 0.55em; color: #555; margin: 0;">Copiá el alias y usalo en tu app de Mercado Pago</p>
-    </div>
-
-    <p style="font-size: 0.6em; color: #555; margin-top: 20px;">Apoya el desarrollo independiente para mantener la privacidad libre.</p>
-</div>
-    <p style="font-size: 0.6em; color: #555; margin-top: 20px;">Apoya el desarrollo independiente para mantener la privacidad libre.</p>
-</div>
 
             <p style="font-size: 0.6em; color: #555; margin-top: 20px;">Apoya el desarrollo independiente para mantener la privacidad libre.</p>
         </div>
