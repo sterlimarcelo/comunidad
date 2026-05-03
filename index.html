@@ -15,6 +15,7 @@
             --card: #16161a;
             --text: #e0e0e0;
             --neon-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+            --mp-color: #009ee3;
         }
 
         body {
@@ -49,7 +50,7 @@
         #main-ui { opacity: 0.3; pointer-events: none; transition: 0.5s; }
         #main-ui.enabled { opacity: 1; pointer-events: auto; }
 
-            .guide-box {
+        .guide-box {
             background: #111;
             border: 1px solid #222;
             border-radius: 8px;
@@ -123,15 +124,15 @@
 <div id="container">
     <h1>ARCANO</h1>
 
-	<div class="guide-box" id="guide-box">
+    <div class="guide-box" id="guide-box">
         <div class="guide-header">DOCUMENTACIÓN Y TÉRMINOS DE USO</div>
         <div class="guide-content">
-            <p><strong>🛡️ Cifrado de Grado Militar:</strong> Arcano utiliza <strong>AES-256 GCM</strong>. Es el estándar más robusto del mundo; un ordenador tardaría trillones de años en descifrar un mensaje sin la llave exacta.</p>
-            <p><strong>🔐 La Llave es Tuya:</strong> La seguridad reside en los 5 rotores. Si tu combinación es única, la comunicación es matemáticamente indescifrable.</p>
-            <p><strong>📡 Conexión P2P:</strong> No hay servidores centrales almacenando tus datos[cite: 2]. La conexión es directa entre tú y tu contacto[cite: 2].</p>
+            <p><strong>🛡️ Cifrado AES-256 GCM:</strong> Arcano utiliza criptografía avanzada. Es el estándar más robusto del mundo; la comunicación es matemáticamente indescifrable sin la llave exacta.</p>
+            <p><strong>🔐 La Llave es Tuya:</strong> La seguridad reside en los 5 rotores. No hay llaves maestras ni accesos traseros.</p>
+            <p><strong>📡 Conexión P2P:</strong> No hay servidores centrales almacenando tus datos. La conexión es directa entre tú y tu contacto.</p>
             
             <div class="legal-notice">
-                <strong>Aviso Legal:</strong> Esta herramienta se entrega para mejorar la seguridad en las comunicaciones[cite: 2]. Como desarrollador, me deslindo de toda responsabilidad por el uso indebido, malintencionado o ilegal de este software[cite: 2]. El usuario asume total responsabilidad sobre el propósito de sus comunicaciones[cite: 2].
+                <strong>Aviso Legal:</strong> Esta herramienta se entrega para mejorar la seguridad en las comunicaciones. Como desarrollador, me deslindo de toda responsabilidad por el uso indebido del software. El usuario asume total responsabilidad.
             </div>
             
             <button class="accept-btn" onclick="enableApp()">Acepto y deseo continuar</button>
@@ -169,14 +170,16 @@
 
         <textarea id="messageInput" placeholder="Mensaje privado..."></textarea>
         <button class="btn-main" style="width:100%; margin-bottom:15px;" onclick="sendEncrypted()">Cifrar y Enviar</button>
-        <!-- BOTÓN DE DESCARGA OFICIAL -->
+
+        
         <div style="margin: 20px 0; text-align: center;">
-        <a href="https://github.com/arcanopro/arcano_pro/releases/latest" 
-       style="display: block; text-decoration: none; background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 8px; font-weight: bold; text-transform: uppercase; box-shadow: var(--neon-shadow); transition: 0.3s;">
-       📥 DESCARGAR APP OFICIAL (APK)
-       </a>
-       <span class="label-tiny" style="margin-top: 8px;">Versión estable v1.0.0</span>
+            <a href="https://github.com/arcanopro/arcano_pro/releases/latest" 
+               style="display: block; text-decoration: none; background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 8px; font-weight: bold; text-transform: uppercase; box-shadow: var(--neon-shadow); transition: 0.3s;">
+               📥 DESCARGAR APP OFICIAL (APK)
+            </a>
+            <span class="label-tiny" style="margin-top: 8px;">Versión estable v1.0.0</span>
         </div>
+
         <span class="label-tiny">DATOS CIFRADOS (WhatsApp / Portapapeles):</span>
         <div id="raw-code-area">...</div>
         
@@ -184,20 +187,35 @@
             <button class="btn-sec" onclick="toggleQR()">Ver QR</button>
             <button class="btn-sec" onclick="processManual()">Descifrar Pegado</button>
         </div>
-		
+
+        <div id="qr-container"></div>
+        <div id="chat-output" style="margin-top:10px;"></div>
+        
+    
 <div style="margin-top: 30px; padding: 20px; border-top: 1px dashed #333; text-align: center;">
-    <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">
-        SOPORTE AL PROYECTO ARCANO
-    </p>
-     
-        <div style="margin-top: 30px; padding: 20px; border-top: 1px dashed #333; text-align: center;">
-            <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">SOPORTE AL PROYECTO ARCANO</p>
-            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7XYHVYCZC4734&item_name=Soporte+Proyecto+Arcano&currency_code=USD" target="_blank" style="text-decoration: none;">
-                <div style="background: #ffc439; color: #000; border-radius: 50px; padding: 12px 25px; font-size: 0.9em; font-weight: bold; display: inline-block; box-shadow: 0 4px 15px rgba(255, 196, 57, 0.4);">
-                    💛 DONAR CON PAYPAL
-                </div>
-            </a>
-            <p style="font-size: 0.6em; color: #555; margin-top: 10px;">Tu donación ayuda a mantener este sistema libre de servidores[cite: 2].</p>
+    <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">SOPORTE AL PROYECTO ARCANO</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+        <!-- PAYPAL -->
+        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7XYHVYCZC4734&item_name=Soporte+Proyecto+Arcano&currency_code=USD" target="_blank" style="text-decoration: none; width: 80%;">
+            <div style="background: #ffc439; color: #000; border-radius: 50px; padding: 12px; font-size: 0.85em; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 196, 57, 0.4);">
+                💛 DONAR CON PAYPAL (USD)
+            </div>
+        </a>
+
+        <!-- MERCADO PAGO CON LINK DE APERTURA -->
+        <a href="https://link.mercadopago.com.ar/arcano.pro" target="_blank" style="text-decoration: none; width: 80%;">
+            <div style="background: #009ee3; color: #fff; border-radius: 50px; padding: 12px; font-size: 0.85em; font-weight: bold; box-shadow: 0 4px 15px rgba(0, 158, 227, 0.4);">
+                💙 DONAR CON MERCADO PAGO
+            </div>
+        </a>
+        <p style="font-size: 0.55em; color: #555; margin: 0;">Alias: arcano.pro</p>
+    </div>
+
+    <p style="font-size: 0.6em; color: #555; margin-top: 20px;">Apoya el desarrollo independiente para mantener la privacidad libre.</p>
+</div>
+
+            <p style="font-size: 0.6em; color: #555; margin-top: 20px;">Apoya el desarrollo independiente para mantener la privacidad libre.</p>
         </div>
     </div>
 </div>
@@ -267,9 +285,9 @@
         document.querySelectorAll('.rotor-input').forEach(i => i.value = i.id === 'r5' ? '0' : 'A');
         peer = null;
         currentConn = null;
-        alert("Sesión finalizada y purgada[cite: 2].");
+        alert("Sesión finalizada y purgada.");
         location.reload(); 
-	}
+    }
 
     async function deriveKey(salt, password) {
         const encoder = new TextEncoder();
@@ -314,7 +332,7 @@
 
     function processManual() {
         const code = prompt("Pega el código cifrado:");
-        if(code) decrypt(code, getPass()).then(txt => addMsg("Manual", txt)).catch(() => alert("Error de llave o código[cite: 2]."));
+        if(code) decrypt(code, getPass()).then(txt => addMsg("Manual", txt)).catch(() => alert("Error de llave o código."));
     }
 
     function addMsg(user, text) {
