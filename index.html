@@ -46,18 +46,16 @@
             text-transform: uppercase;
         }
 
-        /* Bloqueo de Interfaz */
         #main-ui { opacity: 0.3; pointer-events: none; transition: 0.5s; }
         #main-ui.enabled { opacity: 1; pointer-events: auto; }
 
-        /* Panel Informativo y Legal */
-        .guide-box {
+            .guide-box {
             background: #111;
             border: 1px solid #222;
             border-radius: 8px;
             margin-bottom: 20px;
             overflow: hidden;
-            text-align: center; /* Texto centrado solicitado */
+            text-align: center; 
         }
 
         .guide-header {
@@ -97,7 +95,6 @@
             text-transform: uppercase;
         }
 
-        /* Estilos de Control */
         .connection-panel { background: #111; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #222; text-align: center; }
         .alias-config { display: flex; gap: 10px; margin-bottom: 15px; justify-content: center; align-items: flex-end; }
         .status-badge { display: block; text-align: center; padding: 8px; font-size: 0.8em; margin-top: 10px; border-radius: 4px; background: #222; font-weight: bold; }
@@ -126,8 +123,7 @@
 <div id="container">
     <h1>ARCANO</h1>
 
-    <!-- Guía y Transparencia Técnica con Botón de Aceptación -->
-    <div class="guide-box" id="guide-box">
+	<div class="guide-box" id="guide-box">
         <div class="guide-header">DOCUMENTACIÓN Y TÉRMINOS DE USO</div>
         <div class="guide-content">
             <p><strong>🛡️ Cifrado de Grado Militar:</strong> Arcano utiliza <strong>AES-256 GCM</strong>. Es el estándar más robusto del mundo; un ordenador tardaría trillones de años en descifrar un mensaje sin la llave exacta.</p>
@@ -142,7 +138,6 @@
         </div>
     </div>
     
-    <!-- Interfaz principal inicialmente bloqueada -->
     <div id="main-ui">
         <div class="connection-panel">
             <div class="alias-config">
@@ -194,7 +189,7 @@
     <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">
         SOPORTE AL PROYECTO ARCANO
     </p>
-     <!-- SECCIÓN DE PAYPAL -->
+     
         <div style="margin-top: 30px; padding: 20px; border-top: 1px dashed #333; text-align: center;">
             <p style="font-size: 0.7em; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;">SOPORTE AL PROYECTO ARCANO</p>
             <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7XYHVYCZC4734&item_name=Soporte+Proyecto+Arcano&currency_code=USD" target="_blank" style="text-decoration: none;">
@@ -211,11 +206,9 @@
     let peer = null;
     let currentConn = null;
 
-    // Generador de Alias inicial
     const prefijos = ['arcano', 'cripto', 'nexo', 'sigma', 'vortex', 'omega'];
     document.getElementById('my-alias-input').value = `${prefijos[Math.floor(Math.random()*prefijos.length)]}-${Math.floor(Math.random()*999)}`;
 
-    // Función para habilitar la APP tras aceptar términos
     function enableApp() {
         document.getElementById('main-ui').classList.add('enabled');
         document.getElementById('guide-box').style.display = 'none';
@@ -275,8 +268,8 @@
         peer = null;
         currentConn = null;
         alert("Sesión finalizada y purgada[cite: 2].");
-        location.reload(); // Reinicia para volver a mostrar el disclaimer
-    }
+        location.reload(); 
+	}
 
     async function deriveKey(salt, password) {
         const encoder = new TextEncoder();
